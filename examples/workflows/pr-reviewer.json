@@ -1,0 +1,23 @@
+{
+  "id": "pr-reviewer",
+  "name": "PR Reviewer",
+  "description": "Runs a lightweight pull request review workflow.",
+  "trigger": {
+    "type": "manual"
+  },
+  "steps": [
+    {
+      "id": "list-prs",
+      "type": "tool",
+      "tool": "github.listPRs",
+      "params": {
+        "repo": "owner/repo",
+        "state": "open"
+      }
+    }
+  ],
+  "enabled": false,
+  "createdAt": "2026-02-11T00:00:00.000Z",
+  "updatedAt": "2026-02-11T00:00:00.000Z"
+}
+

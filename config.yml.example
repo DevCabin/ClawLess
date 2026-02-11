@@ -1,0 +1,32 @@
+intelligence:
+  routing: auto
+
+  ollama:
+    enabled: true
+    url: http://localhost:11434
+    model: qwen2.5:7b
+    fallback_to_claude: true
+    timeout_ms: 5000
+
+  claude:
+    model: claude-sonnet-4.5
+    max_tokens: 4096
+    temperature: 0.7
+
+  cost_controls:
+    max_per_execution: 0.10
+    max_per_day: 2.00
+    alert_at: 1.50
+
+tools:
+  github:
+    token: ${GITHUB_TOKEN}
+
+  slack:
+    token: ${SLACK_TOKEN}
+    default_channel: "#alerts"
+
+runtime:
+  check_interval_seconds: 30
+  max_concurrent_workflows: 5
+  log_level: info

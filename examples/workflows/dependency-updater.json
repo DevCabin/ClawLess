@@ -1,0 +1,21 @@
+{
+  "id": "dependency-updater",
+  "name": "Dependency Updater",
+  "description": "Weekly dependency check placeholder workflow.",
+  "trigger": {
+    "type": "cron",
+    "schedule": "0 9 * * 1"
+  },
+  "steps": [
+    {
+      "id": "plan-update",
+      "type": "agent",
+      "agentTask": "planning",
+      "prompt": "Review project dependency update strategy and provide a safe rollout plan."
+    }
+  ],
+  "enabled": false,
+  "createdAt": "2026-02-11T00:00:00.000Z",
+  "updatedAt": "2026-02-11T00:00:00.000Z"
+}
+
