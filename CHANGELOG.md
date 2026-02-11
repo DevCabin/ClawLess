@@ -70,3 +70,17 @@ All notable project updates are recorded here.
 
 **Outcome**
 - Public-facing docs now match current ownership and branding direction while avoiding premature community language.
+
+### Commit: `openclaw`
+
+**Summary**
+- Added a direct attribution link to OpenClaw in README acknowledgments to ensure visible upstream credit.
+
+**Detailed Notes**
+- Updated `README.md` acknowledgments section:
+  - changed plain text reference to linked attribution: `https://github.com/openclaw/openclaw`
+  - added explicit gratitude note to OpenClaw maintainers
+  - kept project differentiation language intact while improving discoverability of upstream inspiration
+
+**Outcome**
+- Repository now includes a clear, clickable upstream acknowledgment that increases the chance OpenClaw maintainers can notice referral traffic or mention activity.

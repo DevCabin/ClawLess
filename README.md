@@ -118,11 +118,13 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
-Inspired by OpenClaw but built on principles of:
+Inspired by [OpenClaw](https://github.com/openclaw/openclaw) but built on principles of:
 - Open source
 - Self-hosting
 - Cost optimization
 - Developer control
+
+If you’re part of the OpenClaw project, thank you for the inspiration — this project intentionally links back to your work.
 
 ---
 
