@@ -1,0 +1,98 @@
+{
+  "id": "pr-security-reviewer",
+  "name": "PR Security Reviewer",
+  "description": "Automatically reviews pull requests for security vulnerabilities when opened",
+  "trigger": {
+    "type": "webhook",
+    "event": "pull_request.opened",
+    "source": "github"
+  },
+  "steps": [
+    {
+      "id": "extract-pr-info",
+      "type": "agent",
+      "agentTask": "extraction",
+      "prompt": "Extract PR number, author, and repository from this webhook payload: {{trigger.payload}}",
+      "outputSchema": {
+        "pr_number": "number",
+        "author": "string",
+        "repo": "string"
+      },
+      "comment": "Router will use Ollama for simple extraction"
+    },
+    {
+      "id": "fetch-pr-diff",
+      "type": "tool",
+      "tool": "github.getPRDiff",
+      "params": {
+        "repo": "{{step.extract-pr-info.repo}}",
+        "pr_number": "{{step.extract-pr-info.pr_number}}"
+      },
+      "comment": "Direct API call, no LLM needed"
+    },
+    {
+      "id": "classify-risk",
+      "type": "agent",
+      "agentTask": "classification",
+      "prompt": "Does this diff contain high-risk changes (auth, secrets, SQL, file uploads)?\n\n{{step.fetch-pr-diff.diff}}\n\nRespond with JSON: {\"is_high_risk\": boolean, \"reason\": string}",
+      "expectsJSON": true,
+      "requiredFields": ["is_high_risk", "reason"],
+      "comment": "Router will try Ollama first, fallback to Claude if uncertain"
+    },
+    {
+      "id": "detailed-security-review",
+      "type": "agent",
+      "agentTask": "security_analysis",
+      "prompt": "Perform a detailed security review of this pull request diff. Look for:\n- SQL injection vulnerabilities\n- XSS vulnerabilities\n- Hardcoded secrets or credentials\n- Authentication/authorization issues\n- Unsafe file operations\n- Unsafe deserialization\n\nDiff:\n{{step.fetch-pr-diff.diff}}\n\nProvide findings in JSON: {\"findings\": [{\"severity\": \"high|medium|low\", \"issue\": string, \"location\": string, \"recommendation\": string}], \"summary\": string}",
+      "expectsJSON": true,
+      "requiredFields": ["findings", "summary"],
+      "condition": "{{step.classify-risk.is_high_risk}}",
+      "comment": "Router will use Claude for complex security analysis"
+    },
+    {
+      "id": "post-review-comment",
+      "type": "tool",
+      "tool": "github.createComment",
+      "params": {
+        "repo": "{{step.extract-pr-info.repo}}",
+        "pr_number": "{{step.extract-pr-info.pr_number}}",
+        "body": "## 🔒 Security Review\n\n{{step.detailed-security-review.summary}}\n\n### Findings:\n{{#each step.detailed-security-review.findings}}\n- **{{severity}}**: {{issue}}\n  - Location: {{location}}\n  - Recommendation: {{recommendation}}\n{{/each}}\n\n*Automated review by Clawless*"
+      },
+      "condition": "{{step.classify-risk.is_high_risk}}",
+      "comment": "Only post if high-risk changes detected"
+    },
+    {
+      "id": "notify-slack",
+      "type": "tool",
+      "tool": "slack.postMessage",
+      "params": {
+        "channel": "#security-alerts",
+        "text": "🚨 Security review found {{step.detailed-security-review.findings.length}} issue(s) in PR #{{step.extract-pr-info.pr_number}}"
+      },
+      "condition": "{{step.classify-risk.is_high_risk}}",
+      "comment": "Notify team on Slack if issues found"
+    }
+  ],
+  "errorHandling": {
+    "retry": {
+      "maxAttempts": 3,
+      "backoff": "exponential"
+    },
+    "notify": ["ui", "slack"]
+  },
+  "enabled": false,
+  "createdAt": "2026-02-09T00:00:00Z",
+  "updatedAt": "2026-02-09T00:00:00Z",
+  "costEstimate": {
+    "perExecution": {
+      "withRouting": "$0.005-0.02",
+      "claudeOnly": "$0.02-0.05"
+    },
+    "breakdown": {
+      "extract-pr-info": "Ollama (free)",
+      "fetch-pr-diff": "No LLM",
+      "classify-risk": "Ollama → Claude fallback (~$0.002)",
+      "detailed-security-review": "Claude (~$0.015)"
+    }
+  }
+}

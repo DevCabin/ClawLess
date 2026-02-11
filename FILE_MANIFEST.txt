@@ -1,0 +1,301 @@
+# Clawless Project Files - Complete Package
+
+**Self-hosted Open Source Alternative to OpenClaw**
+
+If the "Download All" button isn't working, download each file individually:
+
+---
+
+## Core Documentation (Read in this order)
+
+1. **HANDOFF.md** - START HERE! Complete handoff guide for coding agents
+2. **README.md** - Project overview and quick start
+3. **PRD.md** - Product Requirements Document (vision, features, success criteria)
+4. **ARCHITECTURE.md** - Technical architecture and system design
+5. **IMPLEMENTATION_PLAN.md** - Phase-by-phase build guide (8 weeks of detailed steps)
+6. **SPEC_INTELLIGENCE_ROUTER.md** - Detailed spec for the core Intelligence Router
+7. **MARKETING.md** - Complete marketing strategy and positioning
+
+---
+
+## Configuration Files
+
+8. **.cursorrules** - Coding standards and patterns for AI coding agents
+9. **package.json** - NPM dependencies and scripts
+10. **tsconfig.json** - TypeScript configuration
+11. **.env.example** - Environment variables template
+12. **.gitignore** - Git ignore patterns
+
+---
+
+## Example Files
+
+13. **examples-pr-reviewer.json** - Example workflow showing the Intelligence Router in action
+
+---
+
+## How to Use These Files
+
+### Quick Start (Manual Setup)
+
+```bash
+# 1. Create project directory
+mkdir clawless && cd clawless
+
+# 2. Download all files above into this directory
+
+# 3. Initialize
+npm install
+
+# 4. Configure
+cp .env.example .env
+# Edit .env with your API keys
+
+# 5. Start
+npm run quickstart
+```
+
+### With Cursor AI
+
+```bash
+# 1. Create folder with all files
+mkdir clawless && cd clawless
+# Download all files here
+
+# 2. Open in Cursor
+cursor .
+
+# 3. Tell Cursor:
+"Read HANDOFF.md and implement Phase 0 from IMPLEMENTATION_PLAN.md"
+```
+
+### With Aider
+
+```bash
+cd clawless  # folder with all downloaded files
+
+aider --read HANDOFF.md --read IMPLEMENTATION_PLAN.md --read ARCHITECTURE.md
+
+# Then type:
+"Implement Phase 0: Foundation as described in IMPLEMENTATION_PLAN.md"
+```
+
+---
+
+## File Descriptions
+
+### HANDOFF.md (MOST IMPORTANT)
+Complete guide for coding agents. Tells them exactly what to build and how. Start here.
+
+### README.md
+Project overview, features, quick start. This will be your GitHub README.
+
+### PRD.md
+Product Requirements Document with:
+- Vision and goals
+- User personas
+- Core features
+- Success metrics
+- 8-week development timeline
+- Future roadmap
+
+### ARCHITECTURE.md
+Technical architecture including:
+- System overview
+- Component breakdown
+- Data flows
+- Database schema
+- Security considerations
+- Performance targets
+
+### IMPLEMENTATION_PLAN.md
+Detailed 8-phase build plan:
+- Phase 0: Foundation (types, structure)
+- Phase 1: Runtime Engine
+- Phase 2: Intelligence Router (THE KEY FEATURE)
+- Phase 3: GitHub Tools
+- Phase 4: Scheduler
+- Phase 5: Chat Compiler
+- Phase 6: Web UI
+- Phase 7: Setup Wizard
+- Phase 8: Polish & Launch
+
+Each phase has specific tasks, code examples, and deliverables.
+
+### SPEC_INTELLIGENCE_ROUTER.md
+Deep dive on the Intelligence Router:
+- Complexity scoring algorithm
+- Quality validation
+- Model selection logic
+- Fallback mechanisms
+- Cost tracking
+- Example test cases
+
+This is what makes Clawless unique!
+
+### MARKETING.md
+Complete marketing strategy:
+- Positioning: "Self-hosted Open Source Alternative to OpenClaw"
+- Key messaging and angles
+- Launch strategy (HN, Reddit, Twitter, Product Hunt)
+- Content calendar
+- Target audiences
+- FAQs with pre-prepared answers
+- Community building plan
+
+### .cursorrules
+Coding standards for AI agents:
+- TypeScript patterns
+- Error handling
+- Testing approach
+- Documentation style
+- Common patterns
+
+### package.json
+All NPM dependencies:
+- Next.js (web UI)
+- React
+- Anthropic SDK (Claude)
+- Better-sqlite3 (database)
+- Zod (validation)
+- Octokit (GitHub API)
+- And more...
+
+Plus all dev dependencies and scripts.
+
+### tsconfig.json
+TypeScript configuration:
+- Strict mode enabled
+- Path aliases (@/*)
+- Next.js integration
+- Target ES2022
+
+### .env.example
+Template for environment variables:
+- ANTHROPIC_API_KEY (required)
+- GITHUB_TOKEN (required)
+- SLACK_TOKEN (optional)
+- Ollama configuration
+- Webhook secrets
+
+### .gitignore
+Git ignore patterns:
+- node_modules
+- .env (secrets)
+- data/state.db (user data)
+- workflows/ (user workflows)
+- dist/ build/
+
+### examples-pr-reviewer.json
+Example workflow that:
+1. Extracts PR info (Ollama - free)
+2. Fetches diff (no LLM needed)
+3. Classifies risk level (Ollama → Claude fallback)
+4. Does security review (Claude - complex)
+5. Posts comment with findings
+6. Notifies on Slack
+
+Shows the Intelligence Router in action!
+
+---
+
+## Important Notes
+
+### Marketing Keywords (Always Use)
+- **Self-hosted**
+- **Open source**
+- **Alternative to OpenClaw**
+- **Personal agent runtime**
+- **Hybrid intelligence**
+- **Cost optimization**
+- **60%+ savings**
+
+### Core Value Props
+1. Self-hosted (your data, your infra)
+2. Open source (MIT license, read the code)
+3. Hybrid AI (Ollama + Claude routing)
+4. Cost effective (60%+ savings)
+5. Git-native workflows
+6. No vendor lock-in
+
+### Target Audience
+Primary: r/selfhosted community, OpenClaw users, privacy-conscious developers
+Secondary: Open source advocates, bootstrapped startups, DevOps engineers
+
+### The Differentiator
+The **Intelligence Router** is what makes Clawless special:
+- Analyzes task complexity
+- Routes simple tasks to free Ollama
+- Routes complex tasks to paid Claude
+- Validates quality, falls back automatically
+- Tracks costs transparently
+
+---
+
+## Getting Help
+
+If files aren't downloading:
+1. Try downloading each file individually (right-click → Save As)
+2. Copy/paste content directly from the chat
+3. Check browser download settings
+4. Try a different browser
+
+---
+
+## Next Steps After Download
+
+1. **Read HANDOFF.md first** - It explains everything
+2. **Set up project** - Follow quick start in HANDOFF.md
+3. **Start building** - Follow IMPLEMENTATION_PLAN.md phase by phase
+4. **Reference docs** - Use ARCHITECTURE.md and specs when stuck
+5. **Launch** - Use MARKETING.md for launch strategy
+
+---
+
+## Project Structure You'll Create
+
+```
+clawless/
+├── src/
+│   ├── intelligence/       ⭐ Smart routing (THE KEY FEATURE)
+│   ├── runtime/           Core execution engine
+│   ├── tools/            GitHub, Slack, etc.
+│   ├── compiler/         Chat → Workflow
+│   ├── web/              Next.js UI
+│   └── shared/           Types & utils
+├── workflows/            User workflows (JSON)
+├── data/                SQLite database
+├── examples/            Example workflows
+├── docs/                Documentation
+├── .env                 Your secrets (not committed)
+├── config.yml           Your config
+└── package.json         Dependencies
+```
+
+---
+
+## Success Criteria
+
+You'll know it's working when:
+- ✅ Setup takes < 5 minutes
+- ✅ 60%+ of LLM calls use Ollama (free)
+- ✅ Workflows execute reliably
+- ✅ Web UI shows real-time execution logs
+- ✅ Chat can create workflows from natural language
+- ✅ Costs are tracked per-execution
+
+---
+
+## Community
+
+Once launched:
+- GitHub: [your-repo]
+- Discord: [your-server]
+- Twitter: #clawless
+- Reddit: r/selfhosted
+
+---
+
+**Built with ❤️ for developers who want to own their agent infrastructure**
+
+🐾 Clawless - All the power, none of the claws

@@ -1,0 +1,434 @@
+# Clawless Development Rules
+
+You are helping build **Clawless**, an open-source personal agent runtime that intelligently routes between local (Ollama) and cloud (Claude) AI models.
+
+## Core Principles
+
+1. **TypeScript Strict Mode**: All code must use strict TypeScript with full type safety
+2. **No Over-Engineering**: Simple, readable code over clever abstractions
+3. **Test Alongside Features**: Write tests for core logic as you build
+4. **Documentation**: Add JSDoc comments for public APIs
+5. **Error Handling**: Every async function must handle errors gracefully
+
+## Project Structure
+
+```
+src/
+├── runtime/          # Workflow execution engine
+├── intelligence/     # Model routing (Ollama ↔ Claude)
+├── tools/           # External integrations (GitHub, Slack, etc.)
+├── compiler/        # Chat-to-workflow conversion
+├── web/             # Next.js UI
+└── shared/          # Shared types and utilities
+```
+
+## Coding Standards
+
+### TypeScript
+
+- Use interfaces for data shapes, types for unions/primitives
+- Prefer `const` over `let`, avoid `var`
+- Use async/await over promises.then()
+- Always specify return types for functions
+- Use Zod for runtime validation
+
+### Naming Conventions
+
+- Files: kebab-case (`workflow-engine.ts`)
+- Classes: PascalCase (`WorkflowEngine`)
+- Functions: camelCase (`executeWorkflow`)
+- Constants: UPPER_SNAKE_CASE (`MAX_RETRIES`)
+- Interfaces: PascalCase with no prefix (`Workflow`, not `IWorkflow`)
+
+### Error Handling
+
+```typescript
+// Good
+try {
+  const result = await riskyOperation();
+  return result;
+} catch (error: any) {
+  console.error('Operation failed:', error.message);
+  throw new Error(`Failed to execute: ${error.message}`);
+}
+
+// Bad
+await riskyOperation(); // No error handling
+```
+
+### Logging
+
+```typescript
+// Use structured logging
+console.log('[Component] Action:', { data });
+
+// Examples:
+console.log('[Router] Task complexity:', score);
+console.error('[Engine] Execution failed:', error.message);
+```
+
+## Intelligence Router Rules
+
+The router is the **core differentiator**. Pay special attention:
+
+### Complexity Scoring
+
+- Score 0-2: No LLM needed (deterministic)
+- Score 3-5: Ollama only
+- Score 6-7: Ollama with Claude fallback
+- Score 8-10: Claude required
+
+### Quality Validation
+
+Always validate Ollama outputs:
+- JSON validity (if expected)
+- Required fields present
+- No obvious hallucinations
+- Length sanity checks
+
+### Fallback Logic
+
+```typescript
+// Good
+try {
+  const result = await ollama.execute(task);
+  if (this.quality.validate(result, task)) {
+    return result;
+  }
+  console.log('[Router] Quality check failed, falling back to Claude');
+} catch (error) {
+  console.log('[Router] Ollama failed, falling back to Claude');
+}
+return await claude.execute(task);
+
+// Bad
+return await ollama.execute(task); // No fallback or validation
+```
+
+## Database Rules
+
+### SQLite Best Practices
+
+- Always use prepared statements
+- Use transactions for multiple related writes
+- Create indexes on frequently queried columns
+- Store JSON as TEXT, parse on read
+
+### State Management
+
+```typescript
+// Good
+const execution: Execution = {
+  id: randomUUID(),
+  workflowId: workflow.id,
+  status: 'running',
+  startedAt: new Date(),
+  // ... other required fields
+};
+this.state.createExecution(execution);
+
+// Bad
+const execution = { id: 'abc123' }; // Missing required fields
+```
+
+## Tool Development
+
+### Tool Interface
+
+```typescript
+export const myTool = tool({
+  name: 'namespace.action',
+  description: 'Clear description',
+  schema: z.object({
+    param: z.string(),
+  }),
+  execute: async (params, context) => {
+    // Validate inputs
+    // Call external API
+    // Return structured data
+  },
+  rateLimit: { calls: 10, per: 'minute' },
+  retry: { maxAttempts: 3, backoff: 'exponential', initialDelay: 1000 },
+});
+```
+
+### Error Messages
+
+- Be specific: "GitHub API rate limit exceeded" not "API error"
+- Include context: "Failed to create PR on repo/name"
+- Suggest fixes: "Check your GITHUB_TOKEN environment variable"
+
+## React/Next.js Rules
+
+### Server Components First
+
+- Use Server Components by default
+- Client Components only for interactivity
+- Mark client components with `'use client'`
+
+### Data Fetching
+
+```typescript
+// Good (Server Component)
+async function DashboardPage() {
+  const stats = await getStats();
+  return <div>{stats.count}</div>;
+}
+
+// Good (Client Component with API)
+'use client';
+function ChatPage() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    fetch('/api/chat').then(setData);
+  }, []);
+}
+```
+
+### Styling
+
+- Use Tailwind utility classes
+- Prefer built-in Tailwind over custom CSS
+- Keep components small and focused
+
+## Testing Rules
+
+### What to Test
+
+✅ Test:
+- Core logic (router, complexity analyzer, quality validator)
+- Tool implementations
+- State management
+- Workflow compilation
+
+❌ Don't test:
+- UI components (for now)
+- External API calls (mock them)
+- Configuration loading
+
+### Test Structure
+
+```typescript
+import { describe, it, expect } from 'vitest';
+
+describe('ComplexityAnalyzer', () => {
+  it('should score simple extraction as low complexity', () => {
+    const analyzer = new ComplexityAnalyzer();
+    const task: AgentTask = {
+      type: 'extraction',
+      prompt: 'Extract repo name from URL',
+    };
+    
+    const score = analyzer.analyze(task);
+    
+    expect(score.score).toBeLessThan(6);
+    expect(score.recommendedModel).toBe('ollama');
+  });
+});
+```
+
+## Documentation Rules
+
+### JSDoc Comments
+
+```typescript
+/**
+ * Executes a workflow and returns execution details.
+ * 
+ * @param workflow - The workflow definition to execute
+ * @param trigger - Trigger information (cron, webhook, manual)
+ * @returns Execution record with status and step results
+ * @throws Error if workflow validation fails
+ */
+async executeWorkflow(workflow: Workflow, trigger: Trigger): Promise<Execution> {
+  // ...
+}
+```
+
+### README Updates
+
+When adding new features:
+1. Update README.md feature list
+2. Add example if user-facing
+3. Update setup instructions if needed
+
+## Security Rules
+
+### Environment Variables
+
+- Never commit `.env` files
+- Always use `.env.example` templates
+- Validate all env vars on startup
+- Never log API keys or tokens
+
+### API Keys
+
+```typescript
+// Good
+const apiKey = process.env.ANTHROPIC_API_KEY;
+if (!apiKey) {
+  throw new Error('ANTHROPIC_API_KEY environment variable is required');
+}
+
+// Bad
+const apiKey = 'sk-ant-hardcoded'; // NEVER
+```
+
+### Input Validation
+
+- Always validate user input with Zod
+- Sanitize strings used in templates
+- Never use `eval()` or dynamic code execution
+
+## Git Commit Messages
+
+Format: `type(scope): message`
+
+Types:
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation
+- `refactor`: Code refactoring
+- `test`: Adding tests
+- `chore`: Maintenance
+
+Examples:
+```
+feat(router): add quality validation for Ollama outputs
+fix(engine): handle missing step outputs gracefully
+docs(readme): add installation instructions
+```
+
+## Performance Rules
+
+### Avoid Premature Optimization
+
+- Write clear code first
+- Optimize only when needed
+- Profile before optimizing
+
+### When to Optimize
+
+✅ Optimize:
+- Database queries (use indexes)
+- LLM calls (cache when possible)
+- File I/O (batch operations)
+
+❌ Don't optimize:
+- UI rendering (React is fast enough)
+- One-time setup operations
+- Rare code paths
+
+## Dependencies
+
+### Adding Dependencies
+
+Before adding a new dependency:
+1. Check if built-in Node/browser APIs work
+2. Check if we already have a similar library
+3. Choose well-maintained packages (recent commits, many downloads)
+4. Prefer smaller packages over frameworks
+
+### Version Pinning
+
+- Use exact versions in `package.json` for stability
+- Update dependencies intentionally, not automatically
+
+## Implementation Order
+
+Follow the **IMPLEMENTATION_PLAN.md** phases:
+
+**Phase 0**: Foundation (types, structure)
+**Phase 1**: Runtime engine
+**Phase 2**: Intelligence router ⭐ (core feature)
+**Phase 3**: GitHub tools
+**Phase 4**: Scheduler
+**Phase 5**: Chat compiler
+**Phase 6**: Web UI
+**Phase 7**: Setup wizard
+**Phase 8**: Polish & launch
+
+## When Stuck
+
+1. Check **ARCHITECTURE.md** for design decisions
+2. Check **IMPLEMENTATION_PLAN.md** for step-by-step guidance
+3. Look at similar code in the project
+4. Ask for clarification before guessing
+
+## Common Patterns
+
+### Async Function Pattern
+
+```typescript
+async function doSomething(): Promise<Result> {
+  try {
+    // Validation
+    if (!input) {
+      throw new Error('Input required');
+    }
+    
+    // Main logic
+    const result = await operation();
+    
+    // Post-processing
+    return processResult(result);
+  } catch (error: any) {
+    // Logging
+    console.error('[Component] Operation failed:', error.message);
+    
+    // Re-throw or handle
+    throw new Error(`Failed to do something: ${error.message}`);
+  }
+}
+```
+
+### State Update Pattern
+
+```typescript
+// Create
+const record = { id: randomUUID(), ...data };
+this.state.createRecord(record);
+
+// Update
+this.state.updateRecord(record.id, { status: 'completed' });
+
+// Read
+const record = this.state.getRecord(id);
+if (!record) {
+  throw new Error(`Record not found: ${id}`);
+}
+```
+
+### Tool Execution Pattern
+
+```typescript
+const tool = this.registry.get(toolName);
+if (!tool) {
+  throw new Error(`Tool not found: ${toolName}`);
+}
+
+const params = this.interpolateParams(rawParams, context);
+const result = await tool.execute(params, {
+  executionId: context.executionId,
+  logger: this.logger,
+});
+
+return result;
+```
+
+## Remember
+
+- **Simplicity over cleverness**
+- **Types over runtime checks** (when possible)
+- **Tests for confidence**
+- **Documentation for future you**
+- **Errors that help users**
+
+The goal is production-ready code that users can actually run and contribute to.
+
+---
+
+When in doubt, refer to:
+- ARCHITECTURE.md (system design)
+- IMPLEMENTATION_PLAN.md (what to build)
+- PRD.md (why we're building it)
