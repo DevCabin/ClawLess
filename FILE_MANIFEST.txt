@@ -286,16 +286,14 @@ You'll know it's working when:
 
 ---
 
-## Community
+## Project Ownership
 
-Once launched:
-- GitHub: [your-repo]
-- Discord: [your-server]
-- Twitter: #clawless
-- Reddit: r/selfhosted
+- Maintainer: George Featherstone
+- Organization: DevCabin
+- GitHub: https://github.com/DevCabin/ClawLess
 
 ---
 
-**Built with ❤️ for developers who want to own their agent infrastructure**
+**Built by George Featherstone at DevCabin for developers who want to own their agent infrastructure**
 
 🐾 Clawless - All the power, none of the claws

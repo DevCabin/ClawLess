@@ -39,7 +39,7 @@ Clawless is a production-grade personal agent runtime that intelligently routes 
 
 ```bash
 # 1. Clone
-git clone https://github.com/yourusername/clawless
+git clone https://github.com/DevCabin/ClawLess
 cd clawless
 
 # 2. Install
@@ -106,7 +106,7 @@ Currently implementing Phase 0-2. See [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PL
 
 ## Contributing
 
-We welcome contributions! See [HANDOFF.md](HANDOFF.md) for development guide.
+Contribution flow is being finalized. For now, see [HANDOFF.md](HANDOFF.md) for development guidance.
 
 ---
 
@@ -126,4 +126,4 @@ Inspired by OpenClaw but built on principles of:
 
 ---
 
-**Built with ❤️ by the community**
+**Built by George Featherstone at [DevCabin](https://github.com/DevCabin)**

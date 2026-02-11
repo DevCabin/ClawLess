@@ -52,3 +52,21 @@ All notable project updates are recorded here.
 
 **Outcome**
 - Repository is now at a practical Phase 0 scaffold state with essential foundation artifacts tracked in git, ready for next implementation phases and local setup validation.
+
+### Commit: `credit`
+
+**Summary**
+- Updated docs to reflect direct project credit and ownership, with no community framing yet.
+
+**Detailed Notes**
+- Updated `README.md`:
+  - changed clone URL to `https://github.com/DevCabin/ClawLess`
+  - replaced broad community contribution copy with current in-progress contribution status
+  - replaced footer attribution with: George Featherstone + DevCabin link
+- Updated `FILE_MANIFEST.txt`:
+  - removed "Community" launch block
+  - added "Project Ownership" section with maintainer/org/repo link
+  - updated closing attribution line to George Featherstone / DevCabin
+
+**Outcome**
+- Public-facing docs now match current ownership and branding direction while avoiding premature community language.
