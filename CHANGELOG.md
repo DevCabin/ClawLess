@@ -84,3 +84,23 @@ All notable project updates are recorded here.
 
 **Outcome**
 - Repository now includes a clear, clickable upstream acknowledgment that increases the chance OpenClaw maintainers can notice referral traffic or mention activity.
+
+### Commit: `devfix`
+
+**Summary**
+- Fixed local dev startup so `npm run dev` boots successfully.
+
+**Detailed Notes**
+- Installed project dependencies (`npm install`), which added:
+  - `package-lock.json`
+  - local binaries including `concurrently`
+- Resolved Next.js app-root detection error by adding required App Router files:
+  - `src/app/layout.tsx`
+  - `src/app/page.tsx`
+- Captured Next.js TypeScript auto-adjustments in `tsconfig.json` during first successful boot:
+  - `allowJs: true`
+  - `noEmit: true`
+  - `isolatedModules: true`
+
+**Outcome**
+- `npm run dev` now starts both processes and Next.js serves locally at `http://localhost:3000`.
